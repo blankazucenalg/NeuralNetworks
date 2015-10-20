@@ -6,6 +6,9 @@ import java.awt.event.*;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
@@ -175,28 +178,16 @@ public class Main extends JPanel{
                             infoLabel.setText("Se parece a una 'u'");
                             break;
                         case -2:
-                            infoLabel.setText("Está entre dos letras");
+                            char[] letters = {'a','e','i','o','u'};
                             index=ArrayUtils.firstFound(entrada.getTarget(),1);
+                            infoLabel.setText("Se parece a una "+letters[index]);
                             break;
                         default: 
                             infoLabel.setText("Patrón desconocido");
                             index=4;
                             break;
                     }
-                    //crea la malla de salida-----------------------------------------------
-                    JPanel panel = new JPanel();
-                    for (int i = 0; i < 6; i++){
-                        for (int j = 0; j < 6; j++){
-                            if(vocales.getVowels()[index].getDataMatrix()[i][j]==0){
-                                panel=panels2.get(""+(i+1)+(j+1)+"");
-                                panel.setBackground(Color.white);
-                            }
-                            else{
-                                panel=panels2.get(""+(i+1)+(j+1)+"");
-                                panel.setBackground(Color.black);
-                            }
-                        }
-                    }
+                    Main.printMatrix(vocales.getVowels()[index].getDataMatrix()); 
                 } else {
                     infoLabel.setText("Introduzca un patrón");
                 }
@@ -206,8 +197,11 @@ public class Main extends JPanel{
         entrenarRed.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 Vowels vocales = new Vowels();
+                infoLabel.setText("Entrenando la red...");  
+                
                 int iterations = red.learn(vocales.getVowels()); //Se entrena la red con los datos de las vocales
                 LOGGER.log(Level.FINER, "Red entrenada en {0} iteraciones \n{1}", new Object[]{iterations, red.toString()}); //Imprime el vector de pesos y el vector de umbral
+                infoLabel.setText("Red entrenada");
             }
         });
     }
@@ -233,6 +227,22 @@ public class Main extends JPanel{
         });
     }
     //--------------------------------------------------------------------------
+    static void printMatrix(int[][] dataMatrix) {
+        //crea la malla de salida-----------------------------------------------
+        JPanel panel = new JPanel();
+        for (int i = 0; i < 6; i++){
+            for (int j = 0; j < 6; j++){
+                if(dataMatrix[i][j]==0){
+                    panel=panels2.get(""+(i+1)+(j+1)+"");
+                    panel.setBackground(Color.white);
+                }
+                else{
+                    panel=panels2.get(""+(i+1)+(j+1)+"");
+                    panel.setBackground(Color.black);
+                }
+            }
+        }
+    }
 }
 
 //Esta clase maneja los eventos del editor de bits, actualiza los 1's y 0's-----

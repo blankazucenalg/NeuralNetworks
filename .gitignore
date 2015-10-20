@@ -1,3 +1,4 @@
+# Compiled classes #
 *.class
 
 # Mobile Tools for Java (J2ME)
@@ -8,8 +9,27 @@
 *.war
 *.ear
 
+#the log files just will be commited if necessary#
+*.log
+
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
 /Pr2-Vowels/nbproject/private/
 /Pr2-Vowels/build/
 /Pr2-Vowels/dist/
+
+#Configuration Files#
+*.conf
+*.dat
+*.cfg
+
+#IDE's conf files#
+*.properties
+*.project
+*.idea
+nbproject/
+dist/
+manifest.mf
+build/
+build.xml
