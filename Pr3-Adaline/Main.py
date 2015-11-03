@@ -31,7 +31,7 @@ class Main:
         print self.training_patterns, self.training_targets
 
         # Creating the Network
-        net = Net(len(self.training_patterns[0]), max(self.training_targets) - min(self.training_targets), self.desired_error)
+        net = Net(self.training_patterns, self.training_targets, self.desired_error)
         net.learn()
 
         # Once the network is trained, classify some patterns
