@@ -11,7 +11,7 @@ class Plotter:
     def __init__(self):
         pass
 
-    def plot3d(self, inputs, targets):
+    def plot3d(self, inputs, targets, title):
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
         c = ['r', 'b', 'g', 'c', 'm', 'y', 'k', 'w']
@@ -22,5 +22,6 @@ class Plotter:
         ax.set_xlabel('Px')
         ax.set_ylabel('Py')
         ax.set_zlabel('Pz')
+        ax.set_title(title)
 
         plt.show()

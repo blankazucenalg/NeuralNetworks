@@ -29,4 +29,9 @@ class Net:
         return n
 
     def summatory(self, p, w):
+        # return the sum between p and w
+        pass
+
+    def classify(self, p):
+        # return [targets] for p
         pass
