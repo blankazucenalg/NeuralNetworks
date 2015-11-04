@@ -41,9 +41,9 @@ class Main:
         net.learn(self.training_patterns, self.training_targets, self.desired_error, alpha=0.2)
         # If alpha is not set, it would be calculated by the correlation matrix
         # You can also add a weights matrix and a threshold value to the network and add them to the learn() function
-        #   w = np.matrix([[1, 0], [0, 1]])
-        #   b = np.matrix([[1, 1]])
-        # net.learn(self.training_patterns, self.training_targets, self.desired_error, alpha=0.2, weights=w, threshold=b)
+        #w = np.matrix([[1, 0], [0, 1]])
+        #b = np.matrix([[1],[1]])
+        #net.learn(self.training_patterns, self.training_targets, self.desired_error, alpha=0.4, weights=w, threshold=b)
 
         # Now the ADALINE is trained and we can get the results and save them in a file
         f = open('weights.txt', 'w')

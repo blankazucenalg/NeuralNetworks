@@ -14,7 +14,7 @@ class Net:
     def __init__(self, input_length, target_length):
         # Initialize the weights with random values
         self.weights = np.random.rand(target_length,input_length)
-        self.threshold = np.random.rand(1,target_length)
+        self.threshold = np.random.rand(target_length,1)
 
     def auto_learning_speed(self):
         # TODO: Some cool stuff about the eigenvalues and correlation matrix
@@ -28,7 +28,8 @@ class Net:
             self.threshold = threshold
         self.training_patterns = training_patterns
         self.training_targets = training_targets
-        self.desired_error = np.matrix([[desired_error for x in range(len(training_targets))]])
+        self.desired_error = np.empty((len(training_targets[0]), 1))
+        self.desired_error.fill(desired_error)
         if alpha is not None:
             self.alpha = alpha
         else:
@@ -39,7 +40,8 @@ class Net:
             for p in range(len(training_patterns)):
                 target = self.get_target(training_patterns[p])
                 error = self.training_targets[p] - target
-                if error**2 > desired_error:
+                print "\nError", error
+                if (np.power(error,2) > self.desired_error).all():
                     self.update_weights(error, training_patterns[p])
                     zeros = 0
                 else:
@@ -50,7 +52,7 @@ class Net:
         print 'W = ',self.weights,'\nb = ',self.threshold
 
     def get_target(self, input):
-        print self.weights, input, self.threshold
+        print self.weights, input
         return activation_function((self.weights * input) + self.threshold)
 
     def update_weights(self, error, input):

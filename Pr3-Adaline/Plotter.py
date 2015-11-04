@@ -12,32 +12,35 @@ class Plotter:
         pass
 
     def plot3d(self, inputs, targets, title, weights, threshold):
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d')
+        rows = weights.shape[0]
+        cols = weights.shape[1]
+        weights = np.array(weights)
 
-        # Plot the decision boundary
-        rows = len(weights)
-        cols = len(weights[0])
-        roots = [sum([weights[row][col] for row in range(len(weights))]) for col in range(len(weights[0]))]
-        p = [roots[0], 0 , 0]
-        x = np.arange(max(inputs[0]))
-        y = np.arange(max(inputs[1]))
-        a = weights[0][0]
-        b = weights[0][1]
-        c = weights[0][2]
-        d = -a*p[0] -b*p[1] -c*p[2]
-        z = (-d -a*x -b*y) / c
-        ax.plot_surface(x, y, z, rstride=4, cstride=4, color='b')
+        if (cols == 3):  # Only can plot in 3 dimensions
 
-        print "raices ",roots
+            # Plot the decision boundary
+            n = [sum([weights[row][col] for row in range(rows)]) for col in range(cols)]
+            d = sum(threshold)
+            print max(inputs[0]), max(inputs[1])
+            x_bound,y_bound = np.meshgrid(range(-2,5), range(-2,5))
+            z_bound = (-n[0] * x_bound - n[1] * y_bound - d) * 1. /n[2]
 
-        c = ['r', 'b', 'g', 'c', 'm', 'y', 'k', 'w']
-        m = ['o', '^', '8', 'v', 's', 'p', '*', 'h', 'H', 'D', 'd', '+', 'x', '<', '>']
-        for i, t in zip(inputs, targets):
-            ax.scatter(i[0], i[1], i[2], c=c[int(t % len(c))], marker=m[int(t % len(m))])
+            fig = plt.figure()
+            ax = fig.gca(projection='3d')
+            plt.hold(True)
 
-        ax.set_xlabel('Px')
-        ax.set_ylabel('Py')
-        ax.set_zlabel('Pz')
-        ax.set_title(title)
-        plt.show()
+            ax.plot_surface(x_bound, y_bound, z_bound)
+
+            # Plot the inputs
+            c = ['r', 'b', 'g', 'c', 'm', 'y', 'k', 'w']
+            m = ['o', '^', '8', 'v', 's', 'p', '*', 'h', 'H', 'D', 'd', '+', 'x', '<', '>']
+            for i, t in zip(inputs, targets):
+                ax.scatter(i[0], i[1], i[2], c=c[int(t % len(c))], marker=m[int(t % len(m))])
+
+            ax.set_xlabel('Px')
+            ax.set_ylabel('Py')
+            ax.set_zlabel('Pz')
+            ax.set_title(title)
+            plt.show()
+
+
