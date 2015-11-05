@@ -1,6 +1,8 @@
+import time
 from Adaline import Net
 from Plotter import Plotter
 import numpy as np
+import logging
 
 __author__ = 'azu'
 
@@ -25,14 +27,25 @@ __author__ = 'azu'
 
 class Main:
     def __init__(self):
+        logging.basicConfig(filename='adaline.log', level=logging.DEBUG)
+        start_time = time.time()
+
         self.training_patterns = []
         self.training_targets = []
-        self.desired_error = 0.00000000001
+        self.desired_error = 1e-15
+        logging.info("-----------------------------------------------------------")
+        logging.info("         A D A L I N E    E X A M P L E")
+        logging.info("-----------------------------------------------------------")
+
 
         # Reading the inputs from a file
+        logging.info("---               Training patterns                     ---")
+        logging.info("-----------------------------------------------------------")
+        logging.info(" Pattern\t\tTarget")
         for line in open('train.txt', 'r'):
             self.training_patterns.append(np.matrix(line.split('|')[0]))
             self.training_targets.append(np.matrix(line.split('|')[1]))
+            logging.info("%s", line.replace('\n','').replace('|','\t\t'))
 
         # Creating & training the network
         input_length = len(self.training_patterns[0])
@@ -40,10 +53,8 @@ class Main:
         net = Net(input_length, target_length)
         net.learn(self.training_patterns, self.training_targets, self.desired_error, alpha=0.2)
         # If alpha is not set, it would be calculated by the correlation matrix
-        # You can also add a weights matrix and a threshold value to the network and add them to the learn() function
-        #w = np.matrix([[1, 0], [0, 1]])
-        #b = np.matrix([[1],[1]])
-        #net.learn(self.training_patterns, self.training_targets, self.desired_error, alpha=0.4, weights=w, threshold=b)
+        # You can also add a weights matrix and a threshold value to the network and add them to the learn() function. Eg
+        # net.learn(self.training_patterns, self.training_targets, self.desired_error, alpha=0.4, weights=w, threshold=b)
 
         # Now the ADALINE is trained and we can get the results and save them in a file
         f = open('weights.txt', 'w')
@@ -57,17 +68,28 @@ class Main:
         for line in open('inputs.txt', 'r'):
             self.patterns.append(np.matrix(line.split('|')[0]))
         self.targets = net.classify(self.patterns)
-        print self.training_targets, self.targets
 
         # Now we can get the results
+        logging.info("-----------------------------------------------------------")
+        logging.info("---           Pattern classification results           ---")
+        logging.info("-----------------------------------------------------------")
+        logging.info(" Pattern \t\t Target")
         f = open('results.txt', 'w')
-        f.write(self.patterns.__str__() + '\n')
-        f.write(self.targets.__str__())
+        pat = [[round(q, 4) for q in p] for p in self.patterns]
+        tar = [round(t, 4) for t in self.targets]
+        for p, t in zip(pat, tar):
+            f.write(p.__str__().replace('[', '').replace(']', '').replace(',', ';') + "|" + t.__str__() + "\n")
+            logging.info(p.__str__().replace('[', '').replace(']', '').replace(',', ';') + " \t " + t.__str__())
         f.close()
 
+        logging.info("-----------------------------------------------------------")
+        logging.info("---    Execution finished in %s seconds    ---", (time.time() - start_time))
+        logging.info("-----------------------------------------------------------")
         # Plotting the inputs and targets
-        Plotter().plot3d(self.training_patterns, self.training_targets, 'Training patterns', weights=net.weights, threshold=net.threshold)
-        Plotter().plot3d(self.patterns, self.targets,'Pattern classification', weights=net.weights, threshold=net.threshold)
+        Plotter().plot3d(self.training_patterns, self.training_targets, 'Training patterns', weights=net.weights,
+                         threshold=net.threshold)
+        Plotter().plot3d(self.patterns, self.targets, 'Pattern classification', weights=net.weights,
+                         threshold=net.threshold)
 
 
 Main()

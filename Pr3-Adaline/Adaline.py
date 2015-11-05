@@ -1,3 +1,4 @@
+import logging
 import numpy as np
 import math
 from random import random
@@ -11,10 +12,12 @@ def activation_function(n):
 
 
 class Net:
+    logging.basicConfig(filename='adaline.log', level=logging.DEBUG)
+
     def __init__(self, input_length, target_length):
         # Initialize the weights with random values
-        self.weights = np.random.rand(target_length,input_length)
-        self.threshold = np.random.rand(target_length,1)
+        self.weights = np.random.rand(target_length, input_length)
+        self.threshold = np.random.rand(target_length, 1)
 
     def auto_learning_speed(self):
         # TODO: Some cool stuff about the eigenvalues and correlation matrix
@@ -40,19 +43,24 @@ class Net:
             for p in range(len(training_patterns)):
                 target = self.get_target(training_patterns[p])
                 error = self.training_targets[p] - target
-                print "\nError", error
-                if (np.power(error,2) > self.desired_error).all():
+                if (np.power(error, 2) > self.desired_error).all():
                     self.update_weights(error, training_patterns[p])
                     zeros = 0
                 else:
                     zeros += 1
             generacion += 1
 
-        print 'Red entrenada en ' + generacion.__str__() + ' generaciones.'
-        print 'W = ',self.weights,'\nb = ',self.threshold
+        logging.info("-----------------------------------------------------------")
+        logging.info('---           The ADALINE network was trained           ---')
+        logging.info("-----------------------------------------------------------")
+        logging.info(" alpha = %s", self.alpha)
+        logging.info(' desired error = %s', self.desired_error)
+        logging.info(' W = %s', self.weights)
+        logging.info(' b = %s',self.threshold)
+        logging.info(' Error: %s',error.__str__())
+        logging.info(' The network was trained in %s generations.', generacion.__str__())
 
     def get_target(self, input):
-        print self.weights, input
         return activation_function((self.weights * input) + self.threshold)
 
     def update_weights(self, error, input):
@@ -60,5 +68,4 @@ class Net:
         self.threshold += (2 * self.alpha * error)
 
     def classify(self, patterns):
-        print 'Classifying patterns...'
         return [self.get_target(p) for p in patterns]
