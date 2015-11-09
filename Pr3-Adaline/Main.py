@@ -51,7 +51,7 @@ class Main:
         input_length = len(self.training_patterns[0])
         target_length = len(self.training_targets[0])
         net = Net(input_length, target_length)
-        net.learn(self.training_patterns, self.training_targets, self.desired_error, alpha=0.2)
+        net.learn(self.training_patterns, self.training_targets, self.desired_error)
         # If alpha is not set, it would be calculated by the correlation matrix
         # You can also add a weights matrix and a threshold value to the network and add them to the learn() function. Eg
         # net.learn(self.training_patterns, self.training_targets, self.desired_error, alpha=0.4, weights=w, threshold=b)

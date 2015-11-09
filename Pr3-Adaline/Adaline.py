@@ -1,7 +1,7 @@
 import logging
 import numpy as np
 import math
-from random import random
+from random import random, uniform
 
 __author__ = 'azu'
 
@@ -20,10 +20,7 @@ class Net:
         self.threshold = np.random.rand(target_length, 1)
 
     def auto_learning_speed(self):
-        # TODO: Some cool stuff about the eigenvalues and correlation matrix
-        # Use self.training_patterns to get the correlation matrix
-        # self.alpha = ?
-        pass
+        self.alpha = self.eigenvalues(self.compute_R(self.training_patterns, 0))
 
     def learn(self, training_patterns, training_targets, desired_error, alpha=None, weights=None, threshold=None):
         if weights is not None and threshold is not None:
@@ -37,6 +34,7 @@ class Net:
             self.alpha = alpha
         else:
             self.auto_learning_speed()
+        print round(self.alpha,4)
         generacion = 0
         zeros = 0
         while zeros < len(self.training_targets):
@@ -69,3 +67,61 @@ class Net:
 
     def classify(self, patterns):
         return [self.get_target(p) for p in patterns]
+
+    def eigenvalues(self, md): #P = |A - lambda*I|
+        #Function linalg.eig(a) from Numpy library.
+        comp = 0
+        e = np.linalg.eig(md)
+        print "eigenvalues = ", e[0]
+        e_elem = e[0]
+        for i in range(len(e_elem)):
+            if(e_elem[i] > comp):
+                comp = e_elem[i]
+            else:
+                comp = comp
+
+        alpha_interval = 1/comp
+        print "alpha_interval = 0 to", alpha_interval
+
+        return uniform(0.0,alpha_interval)
+
+    def compute_R(self, training_patterns, p):
+        mult_ma = np.zeros((3,3))
+        mult_mb = np.zeros((3,3))
+        mult_mct = np.zeros((3,3))
+        mult_mca = np.zeros((3,3))
+        mult_mc = np.zeros((3,3))
+        print "p", p
+        while p < len(training_patterns):
+            trans_p = training_patterns[p]
+            i = 0
+
+            while i < 3:
+                for j in range(0,3):
+                    elem = trans_p[i] * trans_p[j]
+                    mult_ma[i][j] = elem*0.5 #E = 0.5, from R = E[PP^T]
+                i += 1
+
+            p += 1
+
+            if(p < len(training_patterns)):
+                trans_p = training_patterns[p]
+                i = 0
+                while i < 3:
+                    for j in range(0,3):
+                        elem = trans_p[i] * trans_p[j]
+                        mult_mb[i][j] = elem*0.5 #E = 0.5, from R = E[PP^T]
+                    i += 1
+                mult_mct = mult_ma + mult_mb
+                mult_mc = mult_mca + mult_mct
+                for i in range(3):
+                    for j in range(3):
+                        mult_mca[i][j] = mult_mc[i][j]
+                p += 1
+
+            elif(p == len(training_patterns)):
+                mult_mct = mult_ma
+                mult_mc = mult_mca + mult_mct
+                break
+        print mult_mc
+        return mult_mc
