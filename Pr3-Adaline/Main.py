@@ -1,9 +1,7 @@
-import Tkinter
-import time
+import Tkinter, time, logging, sys
+import numpy as np
 from Adaline import Net
 from Plotter import Plotter
-import numpy as np
-import logging
 from config import weights, threshold, alpha, desired_error
 
 __author__ = 'azu'
@@ -30,6 +28,7 @@ __author__ = 'azu'
 class Main:
     def __init__(self):
         logging.basicConfig(filename='adaline.log', level=logging.DEBUG)
+        logging.getLogger().addHandler(logging.StreamHandler())
 
         self.training_patterns = []
         self.training_targets = []
@@ -101,11 +100,10 @@ class Main:
         logging.info("-----------------------------------------------------------")
         logging.info(" Pattern \t\t Target")
         f = open('results.txt', 'w')
-        pat = [[round(q, 4) for q in p] for p in self.patterns]
-        tar = [[round(q, 4) for q in p] for p in self.targets]
-        for p, t in zip(pat, tar):
-            f.write(p.__str__().replace('[', '').replace(']', '').replace(',', ';') + "|" + t.__str__() + "\n")
-            logging.info(p.__str__().replace('[', '').replace(']', '').replace(',', ';') + " \t " + t.__str__())
+        tar = [[int(round(q,0)) for q in p] for p in self.targets]
+        for p, t in zip(self.patterns, tar):
+            f.write(p.__str__().replace('[', '').replace(']', '').replace('\n', ';') + "|" + t.__str__().replace('[','').replace(']','').replace(',',';') + "\n")
+            logging.info(p.__str__().replace('[', '').replace(']', '').replace('\n', ';') + "\t" + t.__str__().replace('[','').replace(']','').replace(',',';'))
         f.close()
         logging.info("---    Classifying finished in %s seconds    ---", (time.time() - start_time))
         logging.info("-----------------------------------------------------------")
