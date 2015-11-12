@@ -15,7 +15,7 @@ including the desicion boundary, and it gives the result for the matrix
 ## Language
 Python 2.7.6
 
-# Description
+## Description
 This program uses the patterns given in the file *train.txt*, written like the example 
 below. It includes the values with the format<inputs>|<target>
 ```
