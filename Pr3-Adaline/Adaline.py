@@ -16,8 +16,8 @@ class Net:
 
     def __init__(self, input_length, target_length):
         # Initialize the weights with random values
-        self.weights = np.random.rand(target_length, input_length)
-        self.threshold = np.random.rand(target_length, 1)
+        self.weights = np.zeros([target_length, input_length])
+        self.threshold = np.zeros([target_length, 1])
 
     def auto_learning_speed(self):
         self.alpha = self.eigenvalues(self.compute_R(self.training_patterns, 0))
@@ -39,13 +39,20 @@ class Net:
         while zeros < len(self.training_targets):
             for p in range(len(training_patterns)):
                 target = self.get_target(training_patterns[p])
-                #print target
+                # print target
                 error = self.training_targets[p] - target
-                if abs(error) > self.desired_error:
+                if (abs(error) > self.desired_error).all():
                     self.update_weights(error, training_patterns[p])
                     zeros = 0
                 else:
                     zeros += 1
+                logging.info("-----------------------------------------------------------")
+                logging.info('---                     Iteration %s                    ---',
+                             generacion * len(training_patterns) + p + 1)
+                logging.info("-----------------------------------------------------------")
+                logging.info(' W = %s', self.weights)
+                logging.info(' b = %s', self.threshold)
+                logging.info(' Error: %s', error.__str__())
             generacion += 1
 
         logging.info("-----------------------------------------------------------")
@@ -82,7 +89,7 @@ class Net:
 
         alpha_interval = 1 / comp
         # print "alpha_interval = 0 to", alpha_interval
-        return round(uniform(0.0, alpha_interval),2)
+        return round(uniform(0.0, alpha_interval / 2), 4)
 
     def compute_R(self, training_patterns, p):
         mult_ma = np.zeros((3, 3))

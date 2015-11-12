@@ -1,10 +1,9 @@
-import Tkinter
-import time
+import Tkinter, time, logging, sys
+import numpy as np
 from Adaline import Net
 from Plotter import Plotter
-import numpy as np
-import logging
-from config import weights,threshold,alpha,desired_error
+from config import weights, threshold, alpha, desired_error
+
 __author__ = 'azu'
 
 ''' File example for training:
@@ -29,12 +28,13 @@ __author__ = 'azu'
 class Main:
     def __init__(self):
         logging.basicConfig(filename='adaline.log', level=logging.DEBUG)
+        logging.getLogger().addHandler(logging.StreamHandler())
 
         self.training_patterns = []
         self.training_targets = []
         self.desired_error = 1e-10
         if desired_error is not None:
-             self.desired_error = desired_error
+            self.desired_error = desired_error
         self.alpha = alpha
         logging.info("-----------------------------------------------------------")
         logging.info("         A D A L I N E    E X A M P L E")
@@ -48,7 +48,6 @@ class Main:
         self.label = Tkinter.StringVar()
         Tkinter.Label(top, textvariable=self.label).pack()
         top.mainloop()
-
 
     def train_the_net(self):
         start_time = time.time()
@@ -65,7 +64,8 @@ class Main:
         input_length = len(self.training_patterns[0])
         target_length = len(self.training_targets[0])
         self.net = Net(input_length, target_length)
-        self.net.learn(self.training_patterns, self.training_targets, self.desired_error, alpha=self.alpha, weights=weights, threshold=threshold)
+        self.net.learn(self.training_patterns, self.training_targets, self.desired_error, alpha=self.alpha,
+                       weights=weights, threshold=threshold)
         # If alpha is not set, it would be calculated by the correlation matrix
         # You can also add a weights matrix and a threshold value to the network and add them to the learn() function. Eg
         # net.learn(self.training_patterns, self.training_targets, self.desired_error, alpha=0.4, weights=w, threshold=b)
@@ -77,7 +77,8 @@ class Main:
         f.close()
 
         # Showing weights and threshold in GUi
-        self.label.set('W = ' + self.net.weights.__str__() + '\nb = ' + self.net.threshold.__str__())
+        self.label.set(
+            'alpha = ' + self.net.alpha.__str__() + '\nW = ' + self.net.weights.__str__() + '\nb = ' + self.net.threshold.__str__())
         # Plotting the inputs and targets
         logging.info("---    Training finished in %s seconds    ---", (time.time() - start_time))
         logging.info("-----------------------------------------------------------")
@@ -99,16 +100,16 @@ class Main:
         logging.info("-----------------------------------------------------------")
         logging.info(" Pattern \t\t Target")
         f = open('results.txt', 'w')
-        pat = [[round(q, 4) for q in p] for p in self.patterns]
-        tar = [round(t, 4) for t in self.targets]
-        for p, t in zip(pat, tar):
-            f.write(p.__str__().replace('[', '').replace(']', '').replace(',', ';') + "|" + t.__str__() + "\n")
-            logging.info(p.__str__().replace('[', '').replace(']', '').replace(',', ';') + " \t " + t.__str__())
+        tar = [[int(round(q,0)) for q in p] for p in self.targets]
+        for p, t in zip(self.patterns, tar):
+            f.write(p.__str__().replace('[', '').replace(']', '').replace('\n', ';') + "|" + t.__str__().replace('[','').replace(']','').replace(',',';') + "\n")
+            logging.info(p.__str__().replace('[', '').replace(']', '').replace('\n', ';') + "\t" + t.__str__().replace('[','').replace(']','').replace(',',';'))
         f.close()
         logging.info("---    Classifying finished in %s seconds    ---", (time.time() - start_time))
         logging.info("-----------------------------------------------------------")
         # Plotting the inputs and targets
         Plotter().plot3d(self.patterns, self.targets, 'Pattern classification', weights=self.net.weights,
                          threshold=self.net.threshold)
+
 
 Main()
