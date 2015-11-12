@@ -46,6 +46,12 @@ class Net:
                     zeros = 0
                 else:
                     zeros += 1
+                logging.info("-----------------------------------------------------------")
+                logging.info('---                     Iteration %s                    ---', generacion * len(training_patterns) + p)
+                logging.info("-----------------------------------------------------------")
+                logging.info(' W = %s', self.weights)
+                logging.info(' b = %s', self.threshold)
+                logging.info(' Error: %s', error.__str__())
             generacion += 1
 
         logging.info("-----------------------------------------------------------")
