@@ -39,7 +39,7 @@ class Net:
         while zeros < len(self.training_targets):
             for p in range(len(training_patterns)):
                 target = self.get_target(training_patterns[p])
-                #print target
+                # print target
                 error = self.training_targets[p] - target
                 if (abs(error) > self.desired_error).all():
                     self.update_weights(error, training_patterns[p])
@@ -47,7 +47,8 @@ class Net:
                 else:
                     zeros += 1
                 logging.info("-----------------------------------------------------------")
-                logging.info('---                     Iteration %s                    ---', generacion * len(training_patterns) + p+1)
+                logging.info('---                     Iteration %s                    ---',
+                             generacion * len(training_patterns) + p + 1)
                 logging.info("-----------------------------------------------------------")
                 logging.info(' W = %s', self.weights)
                 logging.info(' b = %s', self.threshold)
@@ -88,7 +89,7 @@ class Net:
 
         alpha_interval = 1 / comp
         # print "alpha_interval = 0 to", alpha_interval
-        return round(uniform(0.0, alpha_interval/2),4)
+        return round(uniform(0.0, alpha_interval / 2), 4)
 
     def compute_R(self, training_patterns, p):
         mult_ma = np.zeros((3, 3))
