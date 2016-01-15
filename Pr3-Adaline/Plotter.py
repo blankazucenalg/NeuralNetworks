@@ -61,3 +61,7 @@ class Plotter:
             x = (-b * y - c * z - d) / a
 
         ax.plot_surface(x, y, z, color='c', alpha=0.3)  # plot a 3d surface plot
+
+    def plot_2d(self, patterns, targets, title, weights, threshold=None):
+        # TODO: Plot pattern dots and weights vectors
+        pass
