@@ -34,9 +34,9 @@ def plot_final_data():
 
 # Get data
 w = np.matrix([[0.7071, -0.7071], [0.7071, 0.7071], [-1, 0]])
-patterns = get_patterns('inputs.txt')
+patterns = get_patterns('/home/azu/Proyectos/NeuralNetworks/Competitive/inputs.txt')
 neurons = 3
-epochs = 300
+epochs = 60
 
 # Creating the network
 net = Competitive(len(patterns[0]), w=copy(w), epochs=epochs)

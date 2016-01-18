@@ -55,7 +55,7 @@ class Main:
         logging.info("---               Training patterns                     ---")
         logging.info("-----------------------------------------------------------")
         logging.info(" Pattern\t\tTarget")
-        for line in open('train.txt', 'r'):
+        for line in open('/home/azu/Proyectos/NeuralNetworks/Adaline/train.txt', 'r'):
             self.training_patterns.append(np.matrix(line.split('|')[0]))
             self.training_targets.append(np.matrix(line.split('|')[1]))
             logging.info("%s", line.replace('\n', '').replace('|', '\t\t'))
@@ -89,7 +89,7 @@ class Main:
         # Once the network is trained, classify some patterns
         self.patterns = []
         self.targets = []
-        for line in open('inputs.txt', 'r'):
+        for line in open('/home/azu/Proyectos/NeuralNetworks/Adaline/inputs.txt', 'r'):
             self.patterns.append(np.matrix(line.split('|')[0]))
         self.targets = self.net.classify(self.patterns)
 
